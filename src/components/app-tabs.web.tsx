@@ -15,7 +15,7 @@ import { ThemedView } from './themed-view';
 
 import { Colors, MaxContentWidth, Spacing } from '@/constants/theme';
 
-export default function AppTabs() {
+function AppTabs() {
   return (
     <Tabs>
       <TabSlot style={{ height: '100%' }} />
@@ -33,7 +33,7 @@ export default function AppTabs() {
   );
 }
 
-export function TabButton({ children, isFocused, ...props }: TabTriggerSlotProps) {
+function TabButton({ children, isFocused, ...props }: TabTriggerSlotProps) {
   return (
     <Pressable {...props} style={({ pressed }) => pressed && styles.pressed}>
       <ThemedView
@@ -47,7 +47,7 @@ export function TabButton({ children, isFocused, ...props }: TabTriggerSlotProps
   );
 }
 
-export function CustomTabList(props: TabListProps) {
+function CustomTabList(props: TabListProps) {
   const scheme = useColorScheme();
   const colors = Colors[scheme === 'unspecified' ? 'light' : scheme];
 
@@ -74,6 +74,9 @@ export function CustomTabList(props: TabListProps) {
     </View>
   );
 }
+
+export { CustomTabList, TabButton };
+export default AppTabs;
 
 const styles = StyleSheet.create({
   tabListContainer: {

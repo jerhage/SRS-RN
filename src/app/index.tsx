@@ -28,7 +28,7 @@ function getDevMenuHint() {
   );
 }
 
-export default function HomeScreen() {
+function HomeScreen() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
@@ -96,3 +96,5 @@ const styles = StyleSheet.create({
     borderRadius: Spacing.four,
   },
 });
+
+export default HomeScreen;

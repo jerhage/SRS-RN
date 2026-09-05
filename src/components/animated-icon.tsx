@@ -8,7 +8,7 @@ import { scheduleOnRN } from 'react-native-worklets';
 const INITIAL_SCALE_FACTOR = Dimensions.get('screen').height / 90;
 const DURATION = 600;
 
-export function AnimatedSplashOverlay() {
+function AnimatedSplashOverlay() {
   const [animate, setAnimate] = useState(false);
   const [visible, setVisible] = useState(true);
 
@@ -95,7 +95,7 @@ const glowKeyframe = new Keyframe({
   },
 });
 
-export function AnimatedIcon() {
+function AnimatedIcon() {
   return (
     <View style={styles.iconContainer}>
       <Animated.View entering={glowKeyframe.duration(60 * 1000 * 4)} style={styles.glow}>
@@ -146,3 +146,5 @@ const styles = StyleSheet.create({
     zIndex: 1000,
   },
 });
+
+export { AnimatedIcon, AnimatedSplashOverlay };
