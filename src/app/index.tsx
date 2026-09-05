@@ -6,6 +6,8 @@ import { useAppDependencies } from '@/composition/app-dependencies-provider';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { CreateDeckForm } from '@/features/study/deck/create-deck-form';
+import { DecksData } from '@/features/study/deck/decks-data';
 import { useStudyViewModel } from '@/features/study/presentation/use-study-view-model';
 
 function HomeScreen() {
@@ -43,6 +45,28 @@ function HomeScreen() {
             </ThemedView>
           ))}
           {!state.isLoading && state.decks.length === 0 ? <ThemedText>No decks yet.</ThemedText> : null}
+          <ThemedView type="backgroundElement" style={styles.dataComponentExample}>
+            <ThemedText type="subtitle">DecksData comparison</ThemedText>
+            <DecksData decks={study.decks}>
+              {({ decks, refresh }) => (
+                <>
+                  <CreateDeckForm
+                    clock={study.clock}
+                    decks={study.decks}
+                    idGenerator={study.idGenerator}
+                    onCreated={refresh}
+                  />
+                  <Button onPress={() => void refresh()} title="Refresh DecksData" />
+                  {decks.map((deck) => (
+                    <ThemedView key={deck.id} style={styles.deckRow}>
+                      <ThemedText>{deck.name}</ThemedText>
+                    </ThemedView>
+                  ))}
+                  {decks.length === 0 ? <ThemedText>No decks yet.</ThemedText> : null}
+                </>
+              )}
+            </DecksData>
+          </ThemedView>
         </ScrollView>
       </SafeAreaView>
     </ThemedView>
@@ -87,6 +111,12 @@ const styles = StyleSheet.create({
   deckRow: {
     alignSelf: 'stretch',
     borderRadius: Spacing.two,
+    padding: Spacing.three,
+  },
+  dataComponentExample: {
+    alignSelf: 'stretch',
+    borderRadius: Spacing.three,
+    gap: Spacing.two,
     padding: Spacing.three,
   },
 });
