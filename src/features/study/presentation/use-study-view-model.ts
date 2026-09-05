@@ -1,17 +1,16 @@
 import { useCallback, useState } from "react";
 import { match } from "ts-pattern";
 
-import { createAndSaveDeck } from "../deck/create-new-deck";
-import { deckNameSchema } from "../deck/deck";
-import type { DeckRepository } from "../deck/deck-repository";
-import type { IdGenerator } from "../identity/id-generator";
-import type { Clock } from "../time/timestamp";
+import {
+  createDeck,
+  type CreateDeckCapabilities,
+} from "../deck/use-cases/create-deck";
+import type { DeckLister } from "../deck/deck-lister";
+import { listDecks } from "../deck/use-cases/list-decks";
 import { initialStudyState, type StudyState } from "./study-state";
 
-interface StudyViewModelDependencies {
-  readonly decks: DeckRepository;
-  readonly clock: Clock;
-  readonly idGenerator: IdGenerator;
+interface StudyViewModelDependencies extends Omit<CreateDeckCapabilities, "deckSaver"> {
+  readonly decks: CreateDeckCapabilities["deckSaver"] & DeckLister;
 }
 
 function useStudyViewModel(dependencies: StudyViewModelDependencies) {
@@ -23,52 +22,78 @@ function useStudyViewModel(dependencies: StudyViewModelDependencies) {
 
   const refresh = useCallback(async () => {
     setState((current) => ({ ...current, isLoading: true, errorMessage: null }));
-    try {
-      const decks = await dependencies.decks.getAll();
-      setState((current) => ({ ...current, decks, isLoading: false }));
-    } catch {
-      setState((current) => ({
-        ...current,
-        isLoading: false,
-        errorMessage: "Could not load decks.",
-      }));
-    }
-  }, [dependencies.decks]);
+    const result = await listDecks({ deckLister: dependencies.decks });
 
-  const createDeck = useCallback(async () => {
-    const parsedName = deckNameSchema.safeParse(state.deckName);
-
-    return match(parsedName)
-      .with({ success: false }, ({ error }) => {
+    match(result)
+      .with({ type: "success" }, ({ decks }) => {
+        setState((current) => ({ ...current, decks, isLoading: false }));
+      })
+      .with({ type: "listFailed" }, () => {
         setState((current) => ({
           ...current,
-          deckNameError: error.issues[0]?.message ?? "Enter a deck name.",
+          isLoading: false,
+          errorMessage: "Could not load decks.",
         }));
       })
-      .with({ success: true }, async ({ data: name }) => {
-        setState((current) => ({
-          ...current,
-          isCreatingDeck: true,
-          deckNameError: null,
-          errorMessage: null,
-        }));
+      .exhaustive();
+  }, [dependencies.decks]);
 
-        try {
-          await createAndSaveDeck(name, dependencies);
-          const decks = await dependencies.decks.getAll();
-          setState((current) => ({ ...current, decks, deckName: "", isCreatingDeck: false }));
-        } catch {
+  const handleCreateDeck = useCallback(async () => {
+    setState((current) => ({
+      ...current,
+      isCreatingDeck: true,
+      deckNameError: null,
+      errorMessage: null,
+    }));
+
+    try {
+      const result = await createDeck({ name: state.deckName }, {
+        deckSaver: dependencies.decks,
+        clock: dependencies.clock,
+        idGenerator: dependencies.idGenerator,
+      });
+
+      return match(result)
+        .with({ type: "success" }, async () => {
+          const listResult = await listDecks({ deckLister: dependencies.decks });
+          match(listResult)
+            .with({ type: "success" }, ({ decks }) => {
+              setState((current) => ({ ...current, decks, deckName: "", isCreatingDeck: false }));
+            })
+            .with({ type: "listFailed" }, () => {
+              setState((current) => ({
+                ...current,
+                isCreatingDeck: false,
+                errorMessage: "Could not load decks.",
+              }));
+            })
+            .exhaustive();
+        })
+        .with({ type: "invalidName" }, ({ message }) => {
+          setState((current) => ({
+            ...current,
+            isCreatingDeck: false,
+            deckNameError: message,
+          }));
+        })
+        .with({ type: "saveFailed" }, () => {
           setState((current) => ({
             ...current,
             isCreatingDeck: false,
             errorMessage: "Could not create deck.",
           }));
-        }
-      })
-      .exhaustive();
+        })
+        .exhaustive();
+    } catch {
+      setState((current) => ({
+        ...current,
+        isCreatingDeck: false,
+        errorMessage: "Could not create deck.",
+      }));
+    }
   }, [dependencies, state.deckName]);
 
-  return { state, onDeckNameChanged, refresh, createDeck };
+  return { state, onDeckNameChanged, refresh, createDeck: handleCreateDeck };
 }
 
 export { useStudyViewModel };

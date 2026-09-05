@@ -52,7 +52,7 @@ function HomeScreen() {
                 <>
                   <CreateDeckForm
                     clock={study.clock}
-                    decks={study.decks}
+                    deckSaver={study.decks}
                     idGenerator={study.idGenerator}
                     onCreated={refresh}
                   />

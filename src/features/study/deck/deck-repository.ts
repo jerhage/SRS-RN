@@ -1,11 +1,9 @@
-import type { Deck, DeckId } from './deck';
+import type { DeckFinder } from "./deck-finder";
+import type { DeckLister } from "./deck-lister";
+import type { DeckRemover } from "./deck-remover";
+import type { DeckSaver } from "./deck-saver";
 
 /** Product-facing capability for persistent decks. */
-interface DeckRepository {
-  get(id: DeckId): Promise<Deck | null>;
-  getAll(options?: { includeArchived?: boolean }): Promise<readonly Deck[]>;
-  save(deck: Deck): Promise<void>;
-  delete(id: DeckId): Promise<void>;
-}
+interface DeckRepository extends DeckFinder, DeckLister, DeckRemover, DeckSaver {}
 
 export type { DeckRepository };

@@ -11,7 +11,7 @@ describe("create deck form", () => {
     const screen = await render(
       <CreateDeckForm
         clock={{ now: () => 1_000 }}
-        decks={store.decks}
+        deckSaver={store.decks}
         idGenerator={{ generate: () => "spanish" }}
         onCreated={onCreated}
       />,

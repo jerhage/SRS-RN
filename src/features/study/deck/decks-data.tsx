@@ -3,7 +3,8 @@ import { ActivityIndicator, Button, StyleSheet, Text, View } from "react-native"
 import { match } from "ts-pattern";
 
 import type { Deck } from "./deck";
-import type { DeckRepository } from "./deck-repository";
+import type { DeckLister } from "./deck-lister";
+import { listDecks } from "./use-cases/list-decks";
 
 type DecksDataState =
   | { readonly type: "loading" }
@@ -11,7 +12,7 @@ type DecksDataState =
   | { readonly type: "data"; readonly decks: readonly Deck[] };
 
 interface DecksDataProps {
-  readonly decks: DeckRepository;
+  readonly decks: DeckLister;
   readonly children: (data: DecksDataValue) => ReactNode;
 }
 
@@ -26,11 +27,15 @@ function DecksData({ decks, children }: DecksDataProps) {
   const refresh = useCallback(async () => {
     setState({ type: "loading" });
 
-    try {
-      setState({ type: "data", decks: await decks.getAll() });
-    } catch {
-      setState({ type: "error" });
-    }
+    const result = await listDecks({ deckLister: decks });
+    match(result)
+      .with({ type: "success" }, ({ decks: loadedDecks }) => {
+        setState({ type: "data", decks: loadedDecks });
+      })
+      .with({ type: "listFailed" }, () => {
+        setState({ type: "error" });
+      })
+      .exhaustive();
   }, [decks]);
 
   useEffect(() => {
