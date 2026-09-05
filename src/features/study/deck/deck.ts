@@ -1,9 +1,10 @@
 import { z } from 'zod/v4';
 
 const deckIdSchema = z.string().min(1);
+const deckNameSchema = z.string().trim().min(1, 'A deck must have a name.');
 const deckSchema = z.object({
   id: deckIdSchema,
-  name: z.string().trim().min(1, 'A deck must have a name.'),
+  name: deckNameSchema,
   parentId: deckIdSchema.optional(),
   createdAt: z.number().int().nonnegative(),
   updatedAt: z.number().int().nonnegative(),
@@ -20,5 +21,5 @@ function parseDeck(value: unknown): Deck {
 type DeckId = z.output<typeof deckIdSchema>;
 type Deck = z.output<typeof deckSchema>;
 
-export { deckIdSchema, deckSchema, parseDeck };
+export { deckIdSchema, deckNameSchema, deckSchema, parseDeck };
 export type { Deck, DeckId };

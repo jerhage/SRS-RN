@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 
 import { createAndSaveDeck } from "../deck/create-new-deck";
+import { deckNameSchema } from "../deck/deck";
 import type { DeckRepository } from "../deck/deck-repository";
 import type { IdGenerator } from "../identity/id-generator";
 import type { Clock } from "../time/timestamp";
@@ -34,9 +35,12 @@ function useStudyViewModel(dependencies: StudyViewModelDependencies) {
   }, [dependencies.decks]);
 
   const createDeck = useCallback(async () => {
-    const name = state.deckName.trim();
-    if (name.length === 0) {
-      setState((current) => ({ ...current, deckNameError: "Enter a deck name." }));
+    const parsedName = deckNameSchema.safeParse(state.deckName);
+    if (!parsedName.success) {
+      setState((current) => ({
+        ...current,
+        deckNameError: parsedName.error.issues[0]?.message ?? "Enter a deck name.",
+      }));
       return;
     }
 
@@ -48,7 +52,7 @@ function useStudyViewModel(dependencies: StudyViewModelDependencies) {
     }));
 
     try {
-      await createAndSaveDeck(name, dependencies);
+      await createAndSaveDeck(parsedName.data, dependencies);
       const decks = await dependencies.decks.getAll();
       setState((current) => ({ ...current, decks, deckName: "", isCreatingDeck: false }));
     } catch {

@@ -44,4 +44,24 @@ describe('study view model', () => {
     expect(result.current.state.deckName).toBe('');
     store.close();
   });
+
+  it('shows a schema validation error for an invalid deck name', async () => {
+    const store = createSqliteScenarioStore();
+    const { result } = await renderHook(() => useStudyViewModel({
+      decks: store.decks,
+      clock: { now: () => 1_000 },
+      idGenerator: { generate: () => 'unused' },
+    }));
+
+    await act(() => {
+      result.current.onDeckNameChanged(' ');
+    });
+    await act(async () => {
+      await result.current.createDeck();
+    });
+
+    expect(result.current.state.deckNameError).toBe('A deck must have a name.');
+    expect(result.current.state.decks).toEqual([]);
+    store.close();
+  });
 });
