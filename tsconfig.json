@@ -4,6 +4,10 @@
     "strict": true,
     "strictNullChecks": true,
     "exactOptionalPropertyTypes": true,
+    "types": [
+      "jest",
+      "node"
+    ],
     "paths": {
       "@/*": [
         "./src/*"

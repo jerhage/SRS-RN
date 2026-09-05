@@ -1,14 +1,13 @@
 import { asc, eq } from 'drizzle-orm';
-import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
-
 import { reviewLogs } from '@/infrastructure/database/schema';
 
 import { assertReviewLog, type ReviewLog, type ReviewRating } from '@/features/study/review/review-log';
 import type { ReviewLogRepository } from '@/features/study/review/review-log-repository';
 import type { CardPhase } from '@/features/study/card/card';
+import type { SqliteDatabase } from './sqlite-database';
 
 class SqliteReviewLogRepository implements ReviewLogRepository {
-  constructor(private readonly db: ExpoSQLiteDatabase) {}
+  constructor(private readonly db: SqliteDatabase) {}
 
   async getByCard(cardId: string): Promise<readonly ReviewLog[]> {
     return (await this.db.select().from(reviewLogs).where(eq(reviewLogs.cardId, cardId))

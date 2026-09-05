@@ -1,13 +1,12 @@
 import { asc, eq } from 'drizzle-orm';
-import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
-
 import { decks } from '@/infrastructure/database/schema';
 
 import { assertDeck, type Deck } from '@/features/study/deck/deck';
 import type { DeckRepository } from '@/features/study/deck/deck-repository';
+import type { SqliteDatabase } from './sqlite-database';
 
 class SqliteDeckRepository implements DeckRepository {
-  constructor(private readonly db: ExpoSQLiteDatabase) {}
+  constructor(private readonly db: SqliteDatabase) {}
 
   async get(id: string): Promise<Deck | null> {
     const [row] = await this.db.select().from(decks).where(eq(decks.id, id)).limit(1);

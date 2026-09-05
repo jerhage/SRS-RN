@@ -1,13 +1,12 @@
 import { and, asc, eq, lte } from 'drizzle-orm';
-import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
-
 import { cards } from '@/infrastructure/database/schema';
 
 import { assertCard, type Card, type CardPhase } from '@/features/study/card/card';
 import type { CardRepository } from '@/features/study/card/card-repository';
+import type { SqliteDatabase } from './sqlite-database';
 
 class SqliteCardRepository implements CardRepository {
-  constructor(private readonly db: ExpoSQLiteDatabase) {}
+  constructor(private readonly db: SqliteDatabase) {}
 
   async get(id: string): Promise<Card | null> {
     const [row] = await this.db.select().from(cards).where(eq(cards.id, id)).limit(1);

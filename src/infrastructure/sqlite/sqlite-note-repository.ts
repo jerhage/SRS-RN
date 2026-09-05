@@ -1,13 +1,12 @@
 import { and, asc, eq } from 'drizzle-orm';
-import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
-
 import { notes } from '@/infrastructure/database/schema';
 
 import { assertNote, type Note } from '@/features/study/note/note';
 import type { NoteRepository } from '@/features/study/note/note-repository';
+import type { SqliteDatabase } from './sqlite-database';
 
 class SqliteNoteRepository implements NoteRepository {
-  constructor(private readonly db: ExpoSQLiteDatabase) {}
+  constructor(private readonly db: SqliteDatabase) {}
 
   async get(id: string): Promise<Note | null> {
     const [row] = await this.db.select().from(notes).where(eq(notes.id, id)).limit(1);
