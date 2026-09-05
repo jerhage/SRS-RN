@@ -7,7 +7,9 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { CreateDeckForm } from '@/features/study/deck/create-deck-form';
+import { DeleteDeckButton } from '@/features/study/deck/delete-deck-button';
 import { DecksData } from '@/features/study/deck/decks-data';
+import { RenameDeckForm } from '@/features/study/deck/rename-deck-form';
 import { useStudyViewModel } from '@/features/study/presentation/use-study-view-model';
 
 function HomeScreen() {
@@ -60,6 +62,18 @@ function HomeScreen() {
                   {decks.map((deck) => (
                     <ThemedView key={deck.id} style={styles.deckRow}>
                       <ThemedText>{deck.name}</ThemedText>
+                      <RenameDeckForm
+                        clock={study.clock}
+                        deck={deck}
+                        deckFinder={study.decks}
+                        deckSaver={study.decks}
+                        onRenamed={refresh}
+                      />
+                      <DeleteDeckButton
+                        deckId={deck.id}
+                        deckRemover={study.decks}
+                        onDeleted={refresh}
+                      />
                     </ThemedView>
                   ))}
                   {decks.length === 0 ? <ThemedText>No decks yet.</ThemedText> : null}
