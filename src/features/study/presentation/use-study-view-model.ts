@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { match } from "ts-pattern";
 
 import { createAndSaveDeck } from "../deck/create-new-deck";
 import { deckNameSchema } from "../deck/deck";
@@ -36,32 +37,35 @@ function useStudyViewModel(dependencies: StudyViewModelDependencies) {
 
   const createDeck = useCallback(async () => {
     const parsedName = deckNameSchema.safeParse(state.deckName);
-    if (!parsedName.success) {
-      setState((current) => ({
-        ...current,
-        deckNameError: parsedName.error.issues[0]?.message ?? "Enter a deck name.",
-      }));
-      return;
-    }
 
-    setState((current) => ({
-      ...current,
-      isCreatingDeck: true,
-      deckNameError: null,
-      errorMessage: null,
-    }));
+    return match(parsedName)
+      .with({ success: false }, ({ error }) => {
+        setState((current) => ({
+          ...current,
+          deckNameError: error.issues[0]?.message ?? "Enter a deck name.",
+        }));
+      })
+      .with({ success: true }, async ({ data: name }) => {
+        setState((current) => ({
+          ...current,
+          isCreatingDeck: true,
+          deckNameError: null,
+          errorMessage: null,
+        }));
 
-    try {
-      await createAndSaveDeck(parsedName.data, dependencies);
-      const decks = await dependencies.decks.getAll();
-      setState((current) => ({ ...current, decks, deckName: "", isCreatingDeck: false }));
-    } catch {
-      setState((current) => ({
-        ...current,
-        isCreatingDeck: false,
-        errorMessage: "Could not create deck.",
-      }));
-    }
+        try {
+          await createAndSaveDeck(name, dependencies);
+          const decks = await dependencies.decks.getAll();
+          setState((current) => ({ ...current, decks, deckName: "", isCreatingDeck: false }));
+        } catch {
+          setState((current) => ({
+            ...current,
+            isCreatingDeck: false,
+            errorMessage: "Could not create deck.",
+          }));
+        }
+      })
+      .exhaustive();
   }, [dependencies, state.deckName]);
 
   return { state, onDeckNameChanged, refresh, createDeck };
