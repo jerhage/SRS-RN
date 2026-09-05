@@ -23,11 +23,7 @@ describe("deck actions", () => {
           deckSaver={store.decks}
           onRenamed={onRenamed}
         />
-        <DeleteDeckButton
-          deckId={spanish.id}
-          deckRemover={store.decks}
-          onDeleted={onDeleted}
-        />
+        <DeleteDeckButton deckId={spanish.id} deckRemover={store.decks} onDeleted={onDeleted} />
       </View>,
     );
 

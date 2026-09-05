@@ -1,11 +1,11 @@
-import { and, asc, eq } from 'drizzle-orm';
+import { and, asc, eq } from "drizzle-orm";
 
-import type { Note } from '@/features/study/note/note';
-import type { NoteRepository } from '@/features/study/note/note-repository';
-import { notes } from '@/infrastructure/database/schema';
+import type { Note } from "@/features/study/note/note";
+import type { NoteRepository } from "@/features/study/note/note-repository";
+import { notes } from "@/infrastructure/database/schema";
 
-import { toDomainNote, toPersistenceNote } from './note-mapper';
-import type { SqliteDatabase } from './sqlite-database';
+import { toDomainNote, toPersistenceNote } from "./note-mapper";
+import type { SqliteDatabase } from "./sqlite-database";
 
 class SqliteNoteRepository implements NoteRepository {
   constructor(private readonly db: SqliteDatabase) {}
@@ -15,11 +15,16 @@ class SqliteNoteRepository implements NoteRepository {
     return row ? toDomainNote(row) : null;
   }
 
-  async getByDeck(deckId: string, options: { includeArchived?: boolean } = {}): Promise<readonly Note[]> {
+  async getByDeck(
+    deckId: string,
+    options: { includeArchived?: boolean } = {},
+  ): Promise<readonly Note[]> {
     const where = options.includeArchived
       ? eq(notes.deckId, deckId)
       : and(eq(notes.deckId, deckId), eq(notes.isArchived, false));
-    return (await this.db.select().from(notes).where(where).orderBy(asc(notes.createdAt))).map(toDomainNote);
+    return (await this.db.select().from(notes).where(where).orderBy(asc(notes.createdAt))).map(
+      toDomainNote,
+    );
   }
 
   async save(note: Note): Promise<void> {

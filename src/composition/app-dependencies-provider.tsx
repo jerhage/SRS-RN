@@ -1,7 +1,7 @@
-import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { createContext, type PropsWithChildren, useContext, useEffect, useState } from "react";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
-import { createAppDependencies, type AppDependencies } from './dependencies';
+import { createAppDependencies, type AppDependencies } from "./dependencies";
 
 const AppDependenciesContext = createContext<AppDependencies | null>(null);
 
@@ -40,24 +40,28 @@ function AppDependenciesProvider({ children }: PropsWithChildren) {
     );
   }
 
-  return <AppDependenciesContext.Provider value={dependencies}>{children}</AppDependenciesContext.Provider>;
+  return (
+    <AppDependenciesContext.Provider value={dependencies}>
+      {children}
+    </AppDependenciesContext.Provider>
+  );
 }
 
 function useAppDependencies(): AppDependencies {
   const dependencies = useContext(AppDependenciesContext);
-  if (!dependencies) throw new Error('AppDependenciesProvider is required.');
+  if (!dependencies) throw new Error("AppDependenciesProvider is required.");
   return dependencies;
 }
 
 function asError(value: unknown): Error {
-  return value instanceof Error ? value : new Error('Unknown database initialization error.');
+  return value instanceof Error ? value : new Error("Unknown database initialization error.");
 }
 
 const styles = StyleSheet.create({
   centered: {
-    alignItems: 'center',
+    alignItems: "center",
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
 });
 

@@ -35,7 +35,7 @@ function DecksDataContent({
   return (
     <ThemedView type="backgroundElement" style={styles.container}>
       <ThemedText type="subtitle">DecksData comparison</ThemedText>
-      <DecksData decks={deckLister}>
+      <DecksData deckLister={deckLister}>
         {({ decks, refresh }) => (
           <>
             <CreateDeckForm

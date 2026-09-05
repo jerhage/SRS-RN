@@ -19,22 +19,29 @@ interface DecksComparisonScreenProps {
 }
 
 function DecksComparisonScreen({ decks, clock, idGenerator }: DecksComparisonScreenProps) {
-  const viewModel = useStudyViewModel({ decks, clock, idGenerator });
+  const { state, createDeck, onDeckNameChanged, refresh } = useStudyViewModel({
+    decks,
+    clock,
+    idGenerator,
+  });
 
   useEffect(() => {
-    void viewModel.refresh();
-  }, [viewModel.refresh]);
+    void refresh();
+  }, [refresh]);
 
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <ScrollView
           contentContainerStyle={styles.content}
-          refreshControl={<RefreshControl onRefresh={() => void viewModel.refresh()} refreshing={viewModel.state.isLoading} />}>
+          refreshControl={
+            <RefreshControl onRefresh={() => void refresh()} refreshing={state.isLoading} />
+          }
+        >
           <DecksViewModelContent
-            onCreateDeck={viewModel.createDeck}
-            onDeckNameChanged={viewModel.onDeckNameChanged}
-            state={viewModel.state}
+            onCreateDeck={createDeck}
+            onDeckNameChanged={onDeckNameChanged}
+            state={state}
           />
           <DecksDataContent
             clock={clock}

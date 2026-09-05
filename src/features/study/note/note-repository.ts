@@ -1,5 +1,5 @@
-import type { DeckId } from '../deck/deck';
-import type { Note, NoteId } from './note';
+import type { DeckId } from "../deck/deck";
+import type { Note, NoteId } from "./note";
 
 interface NoteRepository {
   get(id: NoteId): Promise<Note | null>;

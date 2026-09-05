@@ -1,9 +1,7 @@
 import type { DeckId } from "../deck";
 import type { DeckRemover } from "../deck-remover";
 
-type DeleteDeckResult =
-  | { readonly type: "success" }
-  | { readonly type: "deleteFailed" };
+type DeleteDeckResult = { readonly type: "success" } | { readonly type: "deleteFailed" };
 
 interface DeleteDeckCapabilities {
   readonly deckRemover: DeckRemover;

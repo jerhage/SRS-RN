@@ -13,7 +13,7 @@ describe("study domain validation", () => {
         updatedAt: 2_000,
         isArchived: false,
       }),
-    ).toThrow();
+    ).toThrow("A deck must have a name.");
     expect(() =>
       parseDeck({
         id: "languages",
@@ -23,7 +23,7 @@ describe("study domain validation", () => {
         updatedAt: 2_000,
         isArchived: false,
       }),
-    ).toThrow();
+    ).toThrow("A deck cannot be its own parent.");
   });
 
   it("rejects notes without fields or with blank tags", () => {
@@ -37,7 +37,7 @@ describe("study domain validation", () => {
         updatedAt: 2_000,
         isArchived: false,
       }),
-    ).toThrow();
+    ).toThrow("A note must contain at least one field.");
     expect(() =>
       parseNote({
         id: "spanish-basics",
@@ -48,7 +48,7 @@ describe("study domain validation", () => {
         updatedAt: 2_000,
         isArchived: false,
       }),
-    ).toThrow();
+    ).toThrow("Tags cannot be blank.");
   });
 
   it("rejects invalid scheduling and review values", () => {
@@ -72,7 +72,7 @@ describe("study domain validation", () => {
         updatedAt: 1_000,
         isSuspended: false,
       }),
-    ).toThrow();
+    ).toThrow("Interval cannot be negative.");
     expect(() =>
       parseReviewLog({
         id: "review-1",
@@ -89,6 +89,6 @@ describe("study domain validation", () => {
           lapses: 0,
         },
       }),
-    ).toThrow();
+    ).toThrow("Review time cannot be negative.");
   });
 });

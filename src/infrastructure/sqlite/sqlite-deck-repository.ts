@@ -1,11 +1,11 @@
-import { asc, eq } from 'drizzle-orm';
+import { asc, eq } from "drizzle-orm";
 
-import type { Deck } from '@/features/study/deck/deck';
-import type { DeckRepository } from '@/features/study/deck/deck-repository';
-import { decks } from '@/infrastructure/database/schema';
+import type { Deck } from "@/features/study/deck/deck";
+import type { DeckRepository } from "@/features/study/deck/deck-repository";
+import { decks } from "@/infrastructure/database/schema";
 
-import { toDomainDeck, toPersistenceDeck } from './deck-mapper';
-import type { SqliteDatabase } from './sqlite-database';
+import { toDomainDeck, toPersistenceDeck } from "./deck-mapper";
+import type { SqliteDatabase } from "./sqlite-database";
 
 class SqliteDeckRepository implements DeckRepository {
   constructor(private readonly db: SqliteDatabase) {}
@@ -17,7 +17,9 @@ class SqliteDeckRepository implements DeckRepository {
 
   async getAll(options: { includeArchived?: boolean } = {}): Promise<readonly Deck[]> {
     const query = this.db.select().from(decks).orderBy(asc(decks.name));
-    const rows = options.includeArchived ? await query : await query.where(eq(decks.isArchived, false));
+    const rows = options.includeArchived
+      ? await query
+      : await query.where(eq(decks.isArchived, false));
     return rows.map(toDomainDeck);
   }
 

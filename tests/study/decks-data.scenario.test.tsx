@@ -12,7 +12,7 @@ describe("decks data", () => {
     await store.decks.save(deck("spanish", "Spanish"));
 
     const screen = await render(
-      <DecksData decks={store.decks}>
+      <DecksData deckLister={store.decks}>
         {({ decks }) => <Text>{decks.map((loadedDeck) => loadedDeck.name).join(", ")}</Text>}
       </DecksData>,
     );

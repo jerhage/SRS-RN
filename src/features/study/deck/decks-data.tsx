@@ -12,7 +12,7 @@ type DecksDataState =
   | { readonly type: "success"; readonly decks: readonly Deck[] };
 
 interface DecksDataProps {
-  readonly decks: DeckLister;
+  readonly deckLister: DeckLister;
   readonly children: (data: DecksDataValue) => ReactNode;
 }
 
@@ -21,13 +21,13 @@ interface DecksDataValue {
   readonly refresh: () => Promise<void>;
 }
 
-function DecksData({ decks, children }: DecksDataProps) {
+function DecksData({ deckLister, children }: DecksDataProps) {
   const [state, setState] = useState<DecksDataState>({ type: "loading" });
 
   const refresh = useCallback(async () => {
     setState({ type: "loading" });
 
-    const result = await listDecks({ deckLister: decks });
+    const result = await listDecks({ deckLister });
     match(result)
       .with({ type: "success" }, ({ decks: loadedDecks }) => {
         setState({ type: "success", decks: loadedDecks });
@@ -36,7 +36,7 @@ function DecksData({ decks, children }: DecksDataProps) {
         setState({ type: "error" });
       })
       .exhaustive();
-  }, [decks]);
+  }, [deckLister]);
 
   useEffect(() => {
     void refresh();
@@ -54,7 +54,9 @@ function DecksData({ decks, children }: DecksDataProps) {
         <Button onPress={() => void refresh()} title="Try again" />
       </View>
     ))
-    .with({ type: "success" }, ({ decks: loadedDecks }) => children({ decks: loadedDecks, refresh }))
+    .with({ type: "success" }, ({ decks: loadedDecks }) =>
+      children({ decks: loadedDecks, refresh }),
+    )
     .exhaustive();
 }
 

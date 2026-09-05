@@ -1,6 +1,6 @@
-import { parseCard, type Card } from '@/features/study/card/card';
-import { cardInsertSchema, cardSelectSchema } from '@/infrastructure/database/persistence-schemas';
-import { cards } from '@/infrastructure/database/schema';
+import { parseCard, type Card } from "@/features/study/card/card";
+import { cardInsertSchema, cardSelectSchema } from "@/infrastructure/database/persistence-schemas";
+import { cards } from "@/infrastructure/database/schema";
 
 function toDomainCard(row: unknown): Card {
   const persisted = cardSelectSchema.parse(row);

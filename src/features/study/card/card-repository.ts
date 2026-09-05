@@ -1,6 +1,6 @@
-import type { DeckId } from '../deck/deck';
-import type { Timestamp } from '../time/timestamp';
-import type { Card, CardId } from './card';
+import type { DeckId } from "../deck/deck";
+import type { Timestamp } from "../time/timestamp";
+import type { Card, CardId } from "./card";
 
 interface CardRepository {
   get(id: CardId): Promise<Card | null>;

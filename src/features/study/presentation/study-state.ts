@@ -1,4 +1,4 @@
-import type { Deck } from '../deck/deck';
+import type { Deck } from "../deck/deck";
 
 interface StudyState {
   readonly decks: readonly Deck[];
@@ -12,7 +12,7 @@ interface StudyState {
 const initialStudyState: StudyState = {
   decks: [],
   isLoading: false,
-  deckName: '',
+  deckName: "",
   isCreatingDeck: false,
   deckNameError: null,
   errorMessage: null,

@@ -1,10 +1,7 @@
 import { useCallback, useState } from "react";
 import { match } from "ts-pattern";
 
-import {
-  createDeck,
-  type CreateDeckCapabilities,
-} from "../deck/use-cases/create-deck";
+import { createDeck, type CreateDeckCapabilities } from "../deck/use-cases/create-deck";
 import type { DeckLister } from "../deck/deck-lister";
 import { listDecks } from "../deck/use-cases/list-decks";
 import { initialStudyState, type StudyState } from "./study-state";
@@ -47,11 +44,14 @@ function useStudyViewModel(dependencies: StudyViewModelDependencies) {
     }));
 
     try {
-      const result = await createDeck({ name: state.deckName }, {
-        deckSaver: dependencies.decks,
-        clock: dependencies.clock,
-        idGenerator: dependencies.idGenerator,
-      });
+      const result = await createDeck(
+        { name: state.deckName },
+        {
+          deckSaver: dependencies.decks,
+          clock: dependencies.clock,
+          idGenerator: dependencies.idGenerator,
+        },
+      );
 
       return match(result)
         .with({ type: "success" }, async () => {

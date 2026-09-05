@@ -3,10 +3,7 @@ import { Button, Text, View } from "react-native";
 import { match } from "ts-pattern";
 
 import type { DeckId } from "./deck";
-import {
-  deleteDeck,
-  type DeleteDeckCapabilities,
-} from "./use-cases/delete-deck";
+import { deleteDeck, type DeleteDeckCapabilities } from "./use-cases/delete-deck";
 
 interface DeleteDeckButtonProps extends DeleteDeckCapabilities {
   readonly deckId: DeckId;

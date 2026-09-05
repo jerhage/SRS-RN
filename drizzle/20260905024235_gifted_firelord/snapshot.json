@@ -2,9 +2,7 @@
   "version": "7",
   "dialect": "sqlite",
   "id": "dbf14187-d09e-4a42-87bf-1eca9a2a305d",
-  "prevIds": [
-    "00000000-0000-0000-0000-000000000000"
-  ],
+  "prevIds": ["00000000-0000-0000-0000-000000000000"],
   "ddl": [
     {
       "name": "card",
@@ -413,13 +411,9 @@
       "table": "review_log"
     },
     {
-      "columns": [
-        "note_id"
-      ],
+      "columns": ["note_id"],
       "tableTo": "note",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "NO ACTION",
       "nameExplicit": false,
@@ -428,13 +422,9 @@
       "table": "card"
     },
     {
-      "columns": [
-        "deck_id"
-      ],
+      "columns": ["deck_id"],
       "tableTo": "deck",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "NO ACTION",
       "nameExplicit": false,
@@ -443,13 +433,9 @@
       "table": "card"
     },
     {
-      "columns": [
-        "parent_id"
-      ],
+      "columns": ["parent_id"],
       "tableTo": "deck",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "NO ACTION",
       "nameExplicit": false,
@@ -458,13 +444,9 @@
       "table": "deck"
     },
     {
-      "columns": [
-        "deck_id"
-      ],
+      "columns": ["deck_id"],
       "tableTo": "deck",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "NO ACTION",
       "nameExplicit": false,
@@ -473,13 +455,9 @@
       "table": "note"
     },
     {
-      "columns": [
-        "card_id"
-      ],
+      "columns": ["card_id"],
       "tableTo": "card",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "NO ACTION",
       "nameExplicit": false,
@@ -488,36 +466,28 @@
       "table": "review_log"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "card_pk",
       "table": "card",
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "deck_pk",
       "table": "deck",
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "note_pk",
       "table": "note",
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "review_log_pk",
       "table": "review_log",

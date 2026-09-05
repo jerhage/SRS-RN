@@ -2,10 +2,7 @@ import { useCallback, useState } from "react";
 import { Button, StyleSheet, Text, TextInput, View } from "react-native";
 import { match } from "ts-pattern";
 
-import {
-  createDeck,
-  type CreateDeckCapabilities,
-} from "./use-cases/create-deck";
+import { createDeck, type CreateDeckCapabilities } from "./use-cases/create-deck";
 
 interface CreateDeckFormProps extends CreateDeckCapabilities {
   readonly onCreated: () => Promise<void>;

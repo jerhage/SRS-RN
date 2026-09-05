@@ -1,6 +1,6 @@
-import { parseDeck, type Deck } from '@/features/study/deck/deck';
-import { deckInsertSchema, deckSelectSchema } from '@/infrastructure/database/persistence-schemas';
-import { decks } from '@/infrastructure/database/schema';
+import { parseDeck, type Deck } from "@/features/study/deck/deck";
+import { deckInsertSchema, deckSelectSchema } from "@/infrastructure/database/persistence-schemas";
+import { decks } from "@/infrastructure/database/schema";
 
 function toDomainDeck(row: unknown): Deck {
   const persisted = deckSelectSchema.parse(row);

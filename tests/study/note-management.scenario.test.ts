@@ -1,11 +1,11 @@
-import { deck, note } from './fixtures';
-import { createSqliteScenarioStore } from './sqlite-scenario-store';
+import { deck, note } from "./fixtures";
+import { createSqliteScenarioStore } from "./sqlite-scenario-store";
 
-describe('note management scenarios', () => {
-  it('creates a note in a deck with fields and tags', async () => {
+describe("note management scenarios", () => {
+  it("creates a note in a deck with fields and tags", async () => {
     const store = createSqliteScenarioStore();
-    const languages = deck('languages', 'Languages');
-    const spanishBasics = note('spanish-basics', languages.id);
+    const languages = deck("languages", "Languages");
+    const spanishBasics = note("spanish-basics", languages.id);
     await store.decks.save(languages);
 
     await store.notes.save(spanishBasics);
@@ -15,14 +15,14 @@ describe('note management scenarios', () => {
     store.close();
   });
 
-  it('edits a note fields and tags', async () => {
+  it("edits a note fields and tags", async () => {
     const store = createSqliteScenarioStore();
-    const languages = deck('languages', 'Languages');
-    const original = note('spanish-basics', languages.id);
+    const languages = deck("languages", "Languages");
+    const original = note("spanish-basics", languages.id);
     const edited = {
       ...original,
-      fields: { front: 'Hola', back: 'Hello' },
-      tags: new Set(['spanish', 'greetings']),
+      fields: { front: "Hola", back: "Hello" },
+      tags: new Set(["spanish", "greetings"]),
       updatedAt: 3_000,
     };
     await store.decks.save(languages);
@@ -34,10 +34,10 @@ describe('note management scenarios', () => {
     store.close();
   });
 
-  it('deletes a note from a deck', async () => {
+  it("deletes a note from a deck", async () => {
     const store = createSqliteScenarioStore();
-    const languages = deck('languages', 'Languages');
-    const spanishBasics = note('spanish-basics', languages.id);
+    const languages = deck("languages", "Languages");
+    const spanishBasics = note("spanish-basics", languages.id);
     await store.decks.save(languages);
     await store.notes.save(spanishBasics);
 

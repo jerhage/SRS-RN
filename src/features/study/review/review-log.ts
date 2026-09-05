@@ -1,15 +1,15 @@
-import { z } from 'zod/v4';
+import { z } from "zod/v4";
 
-import { cardIdSchema, schedulingStateSchema } from '../card/card';
+import { cardIdSchema, schedulingStateSchema } from "../card/card";
 
 const reviewLogIdSchema = z.string().min(1);
-const reviewRatingSchema = z.enum(['again', 'hard', 'good', 'easy']);
+const reviewRatingSchema = z.enum(["again", "hard", "good", "easy"]);
 const reviewLogSchema = z.object({
   id: reviewLogIdSchema,
   cardId: cardIdSchema,
   reviewedAt: z.number().int().nonnegative(),
   rating: reviewRatingSchema,
-  elapsedMilliseconds: z.number().int().nonnegative('Review time cannot be negative.'),
+  elapsedMilliseconds: z.number().int().nonnegative("Review time cannot be negative."),
   previousScheduling: schedulingStateSchema,
 });
 

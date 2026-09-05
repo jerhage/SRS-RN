@@ -3,10 +3,7 @@ import { Button, StyleSheet, Text, TextInput, View } from "react-native";
 import { match } from "ts-pattern";
 
 import type { Deck } from "./deck";
-import {
-  renameDeck,
-  type RenameDeckCapabilities,
-} from "./use-cases/rename-deck";
+import { renameDeck, type RenameDeckCapabilities } from "./use-cases/rename-deck";
 
 interface RenameDeckFormProps extends RenameDeckCapabilities {
   readonly deck: Deck;

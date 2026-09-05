@@ -12,10 +12,16 @@ interface DecksViewModelContentProps {
   readonly onCreateDeck: () => Promise<void>;
 }
 
-function DecksViewModelContent({ state, onDeckNameChanged, onCreateDeck }: DecksViewModelContentProps) {
+function DecksViewModelContent({
+  state,
+  onDeckNameChanged,
+  onCreateDeck,
+}: DecksViewModelContentProps) {
   return (
     <>
-      <ThemedText type="title" style={styles.title}>Decks</ThemedText>
+      <ThemedText type="title" style={styles.title}>
+        Decks
+      </ThemedText>
       <ThemedView type="backgroundElement" style={styles.createDeck}>
         <TextInput
           accessibilityLabel="Deck name"
@@ -27,7 +33,11 @@ function DecksViewModelContent({ state, onDeckNameChanged, onCreateDeck }: Decks
           value={state.deckName}
         />
         {state.deckNameError ? <ThemedText type="small">{state.deckNameError}</ThemedText> : null}
-        <Button disabled={state.isCreatingDeck} onPress={() => void onCreateDeck()} title="Create deck" />
+        <Button
+          disabled={state.isCreatingDeck}
+          onPress={() => void onCreateDeck()}
+          title="Create deck"
+        />
       </ThemedView>
       {state.errorMessage ? <ThemedText type="small">{state.errorMessage}</ThemedText> : null}
       {state.decks.map((deck) => (

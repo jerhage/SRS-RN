@@ -1,22 +1,22 @@
-import type { ReviewLog } from '@/features/study/review/review-log';
+import type { ReviewLog } from "@/features/study/review/review-log";
 
-import { card, deck, note } from './fixtures';
-import { createSqliteScenarioStore } from './sqlite-scenario-store';
+import { card, deck, note } from "./fixtures";
+import { createSqliteScenarioStore } from "./sqlite-scenario-store";
 
-describe('review history scenarios', () => {
-  it('retains the scheduling snapshot from a completed review', async () => {
+describe("review history scenarios", () => {
+  it("retains the scheduling snapshot from a completed review", async () => {
     const store = createSqliteScenarioStore();
-    const languages = deck('languages', 'Languages');
-    const spanishBasics = note('spanish-basics', languages.id);
-    const hola = card('hola', languages.id, spanishBasics.id, 5_000);
+    const languages = deck("languages", "Languages");
+    const spanishBasics = note("spanish-basics", languages.id);
+    const hola = card("hola", languages.id, spanishBasics.id, 5_000);
     const reviewLog: ReviewLog = {
-      id: 'review-1',
+      id: "review-1",
       cardId: hola.id,
       reviewedAt: 10_000,
-      rating: 'hard',
+      rating: "hard",
       elapsedMilliseconds: 3_200,
       previousScheduling: {
-        phase: 'review',
+        phase: "review",
         dueAt: 5_000,
         intervalDays: 21,
         easeFactor: 2.35,
