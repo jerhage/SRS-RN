@@ -9,7 +9,7 @@ import { listDecks } from "./use-cases/list-decks";
 type DecksDataState =
   | { readonly type: "loading" }
   | { readonly type: "error" }
-  | { readonly type: "data"; readonly decks: readonly Deck[] };
+  | { readonly type: "success"; readonly decks: readonly Deck[] };
 
 interface DecksDataProps {
   readonly decks: DeckLister;
@@ -30,7 +30,7 @@ function DecksData({ decks, children }: DecksDataProps) {
     const result = await listDecks({ deckLister: decks });
     match(result)
       .with({ type: "success" }, ({ decks: loadedDecks }) => {
-        setState({ type: "data", decks: loadedDecks });
+        setState({ type: "success", decks: loadedDecks });
       })
       .with({ type: "listFailed" }, () => {
         setState({ type: "error" });
@@ -54,7 +54,7 @@ function DecksData({ decks, children }: DecksDataProps) {
         <Button onPress={() => void refresh()} title="Try again" />
       </View>
     ))
-    .with({ type: "data" }, ({ decks: loadedDecks }) => children({ decks: loadedDecks, refresh }))
+    .with({ type: "success" }, ({ decks: loadedDecks }) => children({ decks: loadedDecks, refresh }))
     .exhaustive();
 }
 
