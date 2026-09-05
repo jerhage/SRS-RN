@@ -24,9 +24,7 @@ interface DecksDataValue {
 function DecksData({ deckLister, children }: DecksDataProps) {
   const [state, setState] = useState<DecksDataState>({ type: "loading" });
 
-  const refresh = useCallback(async () => {
-    setState({ type: "loading" });
-
+  const load = useCallback(async () => {
     const result = await listDecks({ deckLister });
     match(result)
       .with({ type: "success" }, ({ decks: loadedDecks }) => {
@@ -38,9 +36,14 @@ function DecksData({ deckLister, children }: DecksDataProps) {
       .exhaustive();
   }, [deckLister]);
 
+  const refresh = useCallback(async () => {
+    setState({ type: "loading" });
+    await load();
+  }, [load]);
+
   useEffect(() => {
-    void refresh();
-  }, [refresh]);
+    void load();
+  }, [load]);
 
   return match(state)
     .with({ type: "loading" }, () => (
