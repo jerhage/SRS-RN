@@ -1,25 +1,25 @@
-import type { DeckId } from '../deck/deck';
-import type { Timestamp } from '../time/timestamp';
+import { z } from 'zod/v4';
 
-type NoteId = string;
+import { deckIdSchema } from '../deck/deck';
 
-/** Editable source material; cards are scheduled prompts derived from notes. */
-interface Note {
-  readonly id: NoteId;
-  readonly deckId: DeckId;
-  readonly fields: Readonly<Record<string, string>>;
-  readonly tags: ReadonlySet<string>;
-  readonly createdAt: Timestamp;
-  readonly updatedAt: Timestamp;
-  readonly isArchived: boolean;
+const noteIdSchema = z.string().min(1);
+const noteSchema = z.object({
+  id: noteIdSchema,
+  deckId: deckIdSchema,
+  fields: z.record(z.string().trim().min(1, 'Note field names cannot be blank.'), z.string())
+    .refine((fields) => Object.keys(fields).length > 0, 'A note must contain at least one field.'),
+  tags: z.set(z.string().trim().min(1, 'Tags cannot be blank.')),
+  createdAt: z.number().int().nonnegative(),
+  updatedAt: z.number().int().nonnegative(),
+  isArchived: z.boolean(),
+});
+
+function parseNote(value: unknown): Note {
+  return noteSchema.parse(value);
 }
 
-function assertNote(note: Note): void {
-  const fieldNames = Object.keys(note.fields);
-  if (fieldNames.length === 0) throw new Error('A note must contain at least one field.');
-  if (fieldNames.some((name) => name.trim().length === 0)) throw new Error('Note field names cannot be blank.');
-  if ([...note.tags].some((tag) => tag.trim().length === 0)) throw new Error('Tags cannot be blank.');
-}
+type NoteId = z.output<typeof noteIdSchema>;
+type Note = z.output<typeof noteSchema>;
 
-export { assertNote };
+export { noteIdSchema, noteSchema, parseNote };
 export type { Note, NoteId };

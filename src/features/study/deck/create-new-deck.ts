@@ -1,6 +1,7 @@
 import type { IdGenerator } from '../identity/id-generator';
 import type { Clock } from '../time/timestamp';
-import { assertDeck, type Deck } from './deck';
+import type { Deck } from './deck';
+import { parseDeck } from './deck';
 import type { DeckRepository } from './deck-repository';
 
 function createNewDeck(
@@ -15,8 +16,7 @@ function createNewDeck(
     updatedAt: now,
     isArchived: false,
   };
-  assertDeck(deck);
-  return deck;
+  return parseDeck(deck);
 }
 
 async function createAndSaveDeck(

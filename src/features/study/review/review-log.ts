@@ -1,23 +1,25 @@
-import { assertSchedulingState, type CardId, type SchedulingState } from '../card/card';
-import type { Timestamp } from '../time/timestamp';
+import { z } from 'zod/v4';
 
-type ReviewLogId = string;
-type ReviewRating = 'again' | 'hard' | 'good' | 'easy';
+import { cardIdSchema, schedulingStateSchema } from '../card/card';
 
-/** Immutable record of an answer and the scheduling state that preceded it. */
-interface ReviewLog {
-  readonly id: ReviewLogId;
-  readonly cardId: CardId;
-  readonly reviewedAt: Timestamp;
-  readonly rating: ReviewRating;
-  readonly elapsedMilliseconds: number;
-  readonly previousScheduling: SchedulingState;
+const reviewLogIdSchema = z.string().min(1);
+const reviewRatingSchema = z.enum(['again', 'hard', 'good', 'easy']);
+const reviewLogSchema = z.object({
+  id: reviewLogIdSchema,
+  cardId: cardIdSchema,
+  reviewedAt: z.number().int().nonnegative(),
+  rating: reviewRatingSchema,
+  elapsedMilliseconds: z.number().int().nonnegative('Review time cannot be negative.'),
+  previousScheduling: schedulingStateSchema,
+});
+
+function parseReviewLog(value: unknown): ReviewLog {
+  return reviewLogSchema.parse(value);
 }
 
-function assertReviewLog(log: ReviewLog): void {
-  if (log.elapsedMilliseconds < 0) throw new Error('Review time cannot be negative.');
-  assertSchedulingState(log.previousScheduling);
-}
+type ReviewLogId = z.output<typeof reviewLogIdSchema>;
+type ReviewRating = z.output<typeof reviewRatingSchema>;
+type ReviewLog = z.output<typeof reviewLogSchema>;
 
-export { assertReviewLog };
+export { parseReviewLog, reviewLogIdSchema, reviewLogSchema, reviewRatingSchema };
 export type { ReviewLog, ReviewLogId, ReviewRating };

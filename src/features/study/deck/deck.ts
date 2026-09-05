@@ -1,21 +1,24 @@
-import type { Timestamp } from '../time/timestamp';
+import { z } from 'zod/v4';
 
-type DeckId = string;
+const deckIdSchema = z.string().min(1);
+const deckSchema = z.object({
+  id: deckIdSchema,
+  name: z.string().trim().min(1, 'A deck must have a name.'),
+  parentId: deckIdSchema.optional(),
+  createdAt: z.number().int().nonnegative(),
+  updatedAt: z.number().int().nonnegative(),
+  isArchived: z.boolean(),
+}).refine((deck) => deck.parentId !== deck.id, {
+  message: 'A deck cannot be its own parent.',
+  path: ['parentId'],
+});
 
-/** A user-owned collection of notes and cards. */
-interface Deck {
-  readonly id: DeckId;
-  readonly name: string;
-  readonly parentId?: DeckId;
-  readonly createdAt: Timestamp;
-  readonly updatedAt: Timestamp;
-  readonly isArchived: boolean;
+function parseDeck(value: unknown): Deck {
+  return deckSchema.parse(value);
 }
 
-function assertDeck(deck: Deck): void {
-  if (deck.name.trim().length === 0) throw new Error('A deck must have a name.');
-  if (deck.parentId === deck.id) throw new Error('A deck cannot be its own parent.');
-}
+type DeckId = z.output<typeof deckIdSchema>;
+type Deck = z.output<typeof deckSchema>;
 
-export { assertDeck };
+export { deckIdSchema, deckSchema, parseDeck };
 export type { Deck, DeckId };

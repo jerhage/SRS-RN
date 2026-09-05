@@ -1,49 +1,54 @@
-import type { DeckId } from '../deck/deck';
-import type { NoteId } from '../note/note';
-import type { Timestamp } from '../time/timestamp';
+import { z } from 'zod/v4';
 
-type CardId = string;
-type CardPhase = 'new' | 'learning' | 'review' | 'relearning';
+import { deckIdSchema } from '../deck/deck';
+import { noteIdSchema } from '../note/note';
 
-interface SchedulingState {
-  readonly phase: CardPhase;
-  readonly dueAt: Timestamp;
-  readonly intervalDays: number;
-  readonly easeFactor: number;
-  readonly repetitions: number;
-  readonly lapses: number;
+const cardIdSchema = z.string().min(1);
+const cardPhaseSchema = z.enum(['new', 'learning', 'review', 'relearning']);
+const schedulingStateSchema = z.object({
+  phase: cardPhaseSchema,
+  dueAt: z.number().int().nonnegative(),
+  intervalDays: z.number().int().nonnegative('Interval cannot be negative.'),
+  easeFactor: z.number().min(1.3, 'Ease factor is below its minimum.'),
+  repetitions: z.number().int().nonnegative('Repetitions cannot be negative.'),
+  lapses: z.number().int().nonnegative('Lapses cannot be negative.'),
+});
+const cardSchema = z.object({
+  id: cardIdSchema,
+  noteId: noteIdSchema,
+  deckId: deckIdSchema,
+  ordinal: z.number().int().nonnegative('Card ordinal cannot be negative.'),
+  prompt: z.string().trim().min(1, 'A card must have a prompt.'),
+  answer: z.string().trim().min(1, 'A card must have an answer.'),
+  scheduling: schedulingStateSchema,
+  createdAt: z.number().int().nonnegative(),
+  updatedAt: z.number().int().nonnegative(),
+  isSuspended: z.boolean(),
+});
+
+function parseSchedulingState(value: unknown): SchedulingState {
+  return schedulingStateSchema.parse(value);
 }
 
-/** A single reviewable prompt. Multiple cards may be produced from one note. */
-interface Card {
-  readonly id: CardId;
-  readonly noteId: NoteId;
-  readonly deckId: DeckId;
-  readonly ordinal: number;
-  readonly prompt: string;
-  readonly answer: string;
-  readonly scheduling: SchedulingState;
-  readonly createdAt: Timestamp;
-  readonly updatedAt: Timestamp;
-  readonly isSuspended: boolean;
+function parseCard(value: unknown): Card {
+  return cardSchema.parse(value);
 }
 
 const INITIAL_EASE_FACTOR = 2.5;
 const MINIMUM_EASE_FACTOR = 1.3;
+type CardId = z.output<typeof cardIdSchema>;
+type CardPhase = z.output<typeof cardPhaseSchema>;
+type SchedulingState = z.output<typeof schedulingStateSchema>;
+type Card = z.output<typeof cardSchema>;
 
-function assertSchedulingState(scheduling: SchedulingState): void {
-  if (scheduling.intervalDays < 0) throw new Error('Interval cannot be negative.');
-  if (scheduling.easeFactor < MINIMUM_EASE_FACTOR) throw new Error('Ease factor is below its minimum.');
-  if (scheduling.repetitions < 0) throw new Error('Repetitions cannot be negative.');
-  if (scheduling.lapses < 0) throw new Error('Lapses cannot be negative.');
-}
-
-function assertCard(card: Card): void {
-  if (card.ordinal < 0) throw new Error('Card ordinal cannot be negative.');
-  if (card.prompt.trim().length === 0) throw new Error('A card must have a prompt.');
-  if (card.answer.trim().length === 0) throw new Error('A card must have an answer.');
-  assertSchedulingState(card.scheduling);
-}
-
-export { assertCard, assertSchedulingState, INITIAL_EASE_FACTOR, MINIMUM_EASE_FACTOR };
+export {
+  cardIdSchema,
+  cardPhaseSchema,
+  cardSchema,
+  INITIAL_EASE_FACTOR,
+  MINIMUM_EASE_FACTOR,
+  parseCard,
+  parseSchedulingState,
+  schedulingStateSchema,
+};
 export type { Card, CardId, CardPhase, SchedulingState };
